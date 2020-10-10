@@ -170,21 +170,33 @@ impl<T: Num + Clone + Copy> Matrix<T> {
 
 #[cfg(test)]
 mod private_tests {
-    use super::{create_identity, Matrix};
+    use super::Matrix;
 
     #[test]
     fn test_cols() {
-        let matrix: Matrix<i32> = Matrix::identity(3);
+        let matrix1: Matrix<i32> = Matrix::identity(1);
+        let matrix2: Matrix<i32> = Matrix::identity(2);
+        let matrix3: Matrix<i32> = Matrix::identity(3);
 
-        assert_eq!(matrix.get_col(0), vec![1, 0, 0]);
-        assert_eq!(matrix.get_col(2), vec![0, 0, 1]);
+        assert_eq!(matrix1.get_col(0), vec![1]);
+        assert_eq!(matrix2.get_col(0), vec![1, 0]);
+        assert_eq!(matrix2.get_col(1), vec![0, 1]);
+        assert_eq!(matrix3.get_col(0), vec![1, 0, 0]);
+        assert_eq!(matrix3.get_col(1), vec![0, 1, 0]);
+        assert_eq!(matrix3.get_col(2), vec![0, 0, 1]);
         
-        assert_eq!(matrix.cols(), vec![vec![1, 0, 0], vec![0, 1, 0], vec![0, 0, 1]]);
+        assert_eq!(matrix1.cols(), vec![vec![1]]);
+        assert_eq!(matrix2.cols(), vec![vec![1, 0], vec![0, 1]]);
+        assert_eq!(matrix3.cols(), vec![vec![1, 0, 0], vec![0, 1, 0], vec![0, 0, 1]]);
     }
 
     #[test]
-    fn test_identity() {
-        assert_eq!(create_identity::<i32>(0), vec![]);
-        assert_eq!(create_identity::<i32>(2), vec![1, 0, 0, 1]);
+    fn test_empty_matrix() {
+        let matrix0: Matrix<i32> = Matrix::zeros(0, 0);
+
+        assert_eq!(matrix0.size(), (0, 0));
+        assert_eq!(matrix0.get_col(0), vec![]);
+        assert_eq!(matrix0.as_slice(), &[]);
+        assert_eq!(matrix0.scalar_add(0), matrix0);
     }
 }
