@@ -6,7 +6,7 @@
 A library for handling mathematical matrices in Rust
 
 ## Quick example
-```rs
+```rust
 #[macro_use]
 extern crate mtrs;
 
@@ -17,5 +17,6 @@ fn main() {
     let mat2 = matrix![(2, 2); 1, 2; 3, 4];
 
     assert_eq!(mat1 * mat2, mat2);
+    println!("{}", mat2);
 }
 ```
