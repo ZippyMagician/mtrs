@@ -20,7 +20,7 @@ where
     fn fmt(&self, fmt: &mut Formatter) -> fmt::Result {
         for row in 1..=self.height {
             for index in ((row - 1) * self.height)..(self.width * row) {
-                write!(fmt, "{} ", self.as_slice()[index])?;
+                write!(fmt, "{} ", self.data[index])?;
             }
 
             write!(fmt, "\n")?;

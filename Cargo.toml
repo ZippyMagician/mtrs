@@ -1,6 +1,6 @@
 [package]
 name = "mtrs"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["ZippyMagician <zippymagician1@gmail.com>"]
 edition = "2018"
 
@@ -16,6 +16,7 @@ exclude = ["/tests/**"]
 
 [badges]
 codecov = { repository = "ZippyMagician/mtrs", branch = "master", service = "github" }
+travis-ci = { repository = "ZippyMagician/mtrs", branch = "master" }
 
 [dependencies]
 num-traits = "0.2"

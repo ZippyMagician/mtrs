@@ -15,7 +15,7 @@ impl<T: Num + Clone + Copy> Add for Matrix<T> {
             let mut new_body = Vec::new();
             let other_slice = other.as_slice();
 
-            for (index, i) in self.as_slice().iter().enumerate() {
+            for (index, i) in self.data.iter().enumerate() {
                 new_body.push(*i + other_slice[index]);
             }
 
@@ -35,7 +35,7 @@ impl<T: Num + Clone + Copy> Sub for Matrix<T> {
             let mut new_body = Vec::new();
             let other_slice = other.as_slice();
 
-            for (index, i) in self.as_slice().iter().enumerate() {
+            for (index, i) in self.data.iter().enumerate() {
                 new_body.push(*i - other_slice[index]);
             }
 
@@ -62,7 +62,7 @@ impl<T: Num + Clone + Copy> Mul for Matrix<T> {
                     row.iter()
                         .zip(col.iter())
                         .map(|(&left, &right)| left * right)
-                        .fold(num_traits::zero(), |acc, x| acc + x),
+                        .fold(T::zero(), |acc, x| acc + x),
                 );
             }
 
@@ -150,16 +150,16 @@ impl<T: Num + Clone + Copy> Matrix<T> {
             return None;
         }
 
-        let mut det: T = num_traits::one();
-        let mut total = num_traits::one();
+        let mut det = T::one();
+        let mut total = T::one();
 
-        let mut temp = vec![num_traits::zero(); self.height + 1];
+        let mut temp = vec![T::zero(); self.height + 1];
         let mut mat = self.data.clone();
 
         for i in 0..self.height {
             let mut index = i;
 
-            while index < self.width && mat[index * self.width + i] == num_traits::zero() {
+            while index < self.width && mat[index * self.width + i] == T::zero() {
                 index += 1;
             }
 
@@ -200,6 +200,7 @@ impl<T: Num + Clone + Copy> Matrix<T> {
         Some(det / total)
     }
 
+    /// Calculate the inverse of `Matrix<T>`, via multiplying the reciprocal of the `determinant`
     pub fn inverse(&self) -> Option<Self> {
         if self.height != self.width {
             return None;

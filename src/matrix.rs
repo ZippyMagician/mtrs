@@ -9,9 +9,9 @@ fn create_identity<T: Num>(size: usize) -> Vec<T> {
     for _ in 0..size {
         for x in 0..size {
             if x == offset {
-                data.push(num_traits::one());
+                data.push(T::one());
             } else {
-                data.push(num_traits::zero())
+                data.push(T::zero())
             }
         }
         offset += 1;
@@ -69,7 +69,7 @@ impl<T: Num + Clone + Copy> Matrix<T> {
         Self {
             height,
             width,
-            data: vec![num_traits::zero(); width * height],
+            data: vec![T::zero(); width * height],
         }
     }
 
@@ -86,7 +86,7 @@ impl<T: Num + Clone + Copy> Matrix<T> {
         Self {
             height,
             width,
-            data: vec![num_traits::one(); width * height],
+            data: vec![T::one(); width * height],
         }
     }
 
