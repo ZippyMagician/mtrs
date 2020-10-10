@@ -1,0 +1,9 @@
+language: rust
+script:
+  - cargo test --verbose
+rust:
+  - stable
+  - nightly
+jobs:
+  allow_failures:
+    - nightly
