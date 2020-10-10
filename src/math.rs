@@ -207,10 +207,10 @@ impl<T: Num + Clone + Copy> Matrix<T> {
         }
         // The bounds are checked, so this is guaranteed to be Some
         let det = self.determinant().unwrap();
-        if det == T::zero() {
+        if det.is_zero() {
             return None;
         }
-        
+
         Some(self.scalar_mul(T::one() / det))
     }
 }
