@@ -170,7 +170,7 @@ impl<T: Num + Clone + Copy> Matrix<T> {
 
 #[cfg(test)]
 mod private_tests {
-    use super::Matrix;
+    use super::{create_identity, Matrix};
 
     #[test]
     fn test_cols() {
@@ -180,5 +180,11 @@ mod private_tests {
         assert_eq!(matrix.get_col(2), vec![0, 0, 1]);
         
         assert_eq!(matrix.cols(), vec![vec![1, 0, 0], vec![0, 1, 0], vec![0, 0, 1]]);
+    }
+
+    #[test]
+    fn test_identity() {
+        assert_eq!(create_identity::<i32>(0), vec![]);
+        assert_eq!(create_identity::<i32>(2), vec![1, 0, 0, 1]);
     }
 }
