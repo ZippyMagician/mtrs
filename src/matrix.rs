@@ -184,10 +184,13 @@ mod private_tests {
         assert_eq!(matrix3.get_col(0), vec![1, 0, 0]);
         assert_eq!(matrix3.get_col(1), vec![0, 1, 0]);
         assert_eq!(matrix3.get_col(2), vec![0, 0, 1]);
-        
+
         assert_eq!(matrix1.cols(), vec![vec![1]]);
         assert_eq!(matrix2.cols(), vec![vec![1, 0], vec![0, 1]]);
-        assert_eq!(matrix3.cols(), vec![vec![1, 0, 0], vec![0, 1, 0], vec![0, 0, 1]]);
+        assert_eq!(
+            matrix3.cols(),
+            vec![vec![1, 0, 0], vec![0, 1, 0], vec![0, 0, 1]]
+        );
     }
 
     #[test]

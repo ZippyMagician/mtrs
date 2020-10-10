@@ -13,9 +13,9 @@ use num_traits::Num;
 /// let matrix: Matrix<i32> = Matrix::identity(3);
 /// println!("{}", matrix);
 /// ```
-impl<T> Display for Matrix<T> 
-where 
-    T: Num + Clone + Copy + Display
+impl<T> Display for Matrix<T>
+where
+    T: Num + Clone + Copy + Display,
 {
     fn fmt(&self, fmt: &mut Formatter) -> fmt::Result {
         for row in 1..=self.height {
