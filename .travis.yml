@@ -1,13 +1,12 @@
 language: rust
-script:
-  - cargo test --verbose
+sudo: required
 rust:
   - stable
+  - beta
   - nightly
-jobs:
+matrix:
   allow_failures:
-    - nightly
-# Codecov support
+    - rust: nightly
 addons:
   apt:
     packages:
