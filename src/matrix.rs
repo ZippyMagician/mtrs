@@ -117,7 +117,7 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     }
 
     /// Wrapper function for `self.data.as_mut_ptr()`
-    pub fn as_mut_ptr(&mut self) -> *const T {
+    pub fn as_mut_ptr(&mut self) -> *mut T {
         self.data.as_mut_ptr()
     }
 
