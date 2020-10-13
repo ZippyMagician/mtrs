@@ -56,7 +56,7 @@ impl<T: Num + Clone + Copy> Matrix<T> {
         }
     }
 
-    /// Create a `Matrix<i32>` of size `M * N` filled with `0`s
+    /// Create a `Matrix<T>` of size `M * N` filled with `0`s
     /// ```
     /// use mtrs::Matrix;
     ///
@@ -73,7 +73,7 @@ impl<T: Num + Clone + Copy> Matrix<T> {
         }
     }
 
-    /// Create a `Matrix<i32>` of size `M * N` filled with `1`s
+    /// Create a `Matrix<T>` of size `M * N` filled with `1`s
     /// ```
     /// use mtrs::Matrix;
     ///
@@ -145,31 +145,67 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     }
 
     /// Returns a single column of the Matrix
-    fn get_col(&self, index: usize) -> Vec<T> {
-        let mut body = Vec::new();
-        let sliced = self.as_slice();
+    /// Returns a `Vec` of all the columns
+    /// ```
+    /// extern crate mtrs;
+    /// use mtrs::matrix;
+    ///
+    /// let mat = matrix![i32; (3, 2); 1, 2; 3, 4; 5, 6];
+    ///
+    /// assert_eq!(mat.get_col(0), Some(vec![1, 3, 5]));
+    /// assert_eq!(mat.get_col(3), None)
+    /// ```
+    pub fn get_col(&self, index: usize) -> Option<Vec<T>> {
+        if index >= self.width {
+            None
+        } else {
+            let mut body = Vec::new();
+            let sliced = self.as_slice();
 
-        for row in 0..self.height {
-            body.push(sliced[row * self.width + index]);
+            for row in 0..self.height {
+                body.push(sliced[row * self.width + index]);
+            }
+
+            Some(body)
         }
-
-        body
     }
 
     /// Returns a `Vec` of all the columns
+    /// ```
+    /// extern crate mtrs;
+    /// use mtrs::matrix;
+    ///
+    /// let mat = matrix![i32; (3, 2); 1, 2; 3, 4; 5, 6];
+    ///
+    /// assert_eq!(mat.cols(), vec![vec![1, 3, 5], vec![2, 4, 6]]);
+    /// ```
     pub fn cols(&self) -> Vec<Vec<T>> {
         let mut body = Vec::new();
 
         for i in 0..self.width {
-            body.push(self.get_col(i));
+            // We can call `unwrap` here as it is guaranteed to be within bounds
+            body.push(self.get_col(i).unwrap());
         }
 
         body
     }
+
+    /// Returns an entry in the Matrix safely, that is:
+    /// ```
+    /// extern crate mtrs;
+    /// use mtrs::matrix;
+    ///
+    /// let mat = matrix![i32; (2, 2); 1, 2; 3, 4];
+    ///
+    /// assert_eq!(mat.get(0, 1), Some(&2));
+    /// ```
+    pub fn get(&self, h: usize, w: usize) -> Option<&T> {
+        self.data.get(h * self.width + w)
+    }
 }
 
 #[cfg(test)]
-mod private_tests {
+mod matrix_tests {
     use super::Matrix;
 
     #[test]
@@ -178,12 +214,12 @@ mod private_tests {
         let matrix2: Matrix<i32> = Matrix::identity(2);
         let matrix3: Matrix<i32> = Matrix::identity(3);
 
-        assert_eq!(matrix1.get_col(0), vec![1]);
-        assert_eq!(matrix2.get_col(0), vec![1, 0]);
-        assert_eq!(matrix2.get_col(1), vec![0, 1]);
-        assert_eq!(matrix3.get_col(0), vec![1, 0, 0]);
-        assert_eq!(matrix3.get_col(1), vec![0, 1, 0]);
-        assert_eq!(matrix3.get_col(2), vec![0, 0, 1]);
+        assert_eq!(matrix1.get_col(0), Some(vec![1]));
+        assert_eq!(matrix2.get_col(0), Some(vec![1, 0]));
+        assert_eq!(matrix2.get_col(1), Some(vec![0, 1]));
+        assert_eq!(matrix3.get_col(0), Some(vec![1, 0, 0]));
+        assert_eq!(matrix3.get_col(1), Some(vec![0, 1, 0]));
+        assert_eq!(matrix3.get_col(2), Some(vec![0, 0, 1]));
 
         assert_eq!(matrix1.cols(), vec![vec![1]]);
         assert_eq!(matrix2.cols(), vec![vec![1, 0], vec![0, 1]]);
@@ -198,7 +234,7 @@ mod private_tests {
         let matrix0: Matrix<i32> = Matrix::zeros(0, 0);
 
         assert_eq!(matrix0.size(), (0, 0));
-        assert_eq!(matrix0.get_col(0), vec![]);
+        assert_eq!(matrix0.get_col(0), None);
         assert_eq!(matrix0.as_slice(), &[]);
         assert_eq!(matrix0.scalar_add(0), matrix0);
     }
