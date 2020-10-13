@@ -54,7 +54,10 @@ fn test_scalars() {
     assert_eq!(norm_matrix.scalar_add(3), matrix![(2, 2); 4, 5; 6, 7]);
     assert_eq!(norm_matrix.scalar_sub(1), matrix![(2, 2); 0, 1; 2, 3]);
     assert_eq!(norm_matrix.scalar_mul(2), matrix![(2, 2); 2, 4; 6, 8]);
-    assert_eq!(floating_matrix.scalar_div(2f32), matrix![f32; (2, 2); 0.5, 1; 1.5, 2]);
+    assert_eq!(
+        floating_matrix.scalar_div(2.0),
+        matrix![f32; (2, 2); 0.5, 1; 1.5, 2]
+    );
 }
 
 #[test]
@@ -71,7 +74,10 @@ fn test_determinant() {
 #[test]
 fn test_inverse() {
     let matrix = matrix![f32; (2, 2); -1, 1.5; 1, -1];
-    
+
     assert_eq!(matrix.determinant(), Some(-0.5));
-    assert_eq!(matrix.inverse().expect("Could not take inverse"), matrix![f32; (2, 2); 2, -3; -2, 2]);
+    assert_eq!(
+        matrix.inverse().expect("Could not take inverse"),
+        matrix![f32; (2, 2); 2, -3; -2, 2]
+    );
 }
