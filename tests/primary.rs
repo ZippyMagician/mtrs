@@ -4,6 +4,13 @@ extern crate mtrs;
 use mtrs::Matrix;
 
 #[test]
+fn test_display() {
+    let matrix = matrix![(2, 2); 1, 2; 3, 4];
+
+    assert_eq!(format!("{}", matrix), "1 2 \n3 4 \n".to_string());
+}
+
+#[test]
 fn test_addition() {
     let m1 = matrix![(3, 3); 3, 4, 7; 1, 2, 6; 9, 5, 7;];
     let m2 = Matrix::identity(3);
@@ -17,13 +24,6 @@ fn test_subtraction() {
     let m2 = Matrix::identity(3);
 
     assert_eq!(m1 - m2, matrix![(3, 3); 2, 4, 7; 1, 1, 6; 9, 5, 6;]);
-}
-
-#[test]
-fn test_display() {
-    let matrix = matrix![(2, 2); 1, 2; 3, 4];
-
-    assert_eq!(format!("{}", matrix), "1 2 \n3 4 \n".to_string());
 }
 
 #[test]
