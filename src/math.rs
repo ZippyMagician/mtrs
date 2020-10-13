@@ -103,7 +103,6 @@ impl<T: Num + Clone + Copy> Matrix<T> {
             .iter()
             .flat_map(|row| row.iter().map(|entry| *entry))
             .collect();
-
         self.height = transposed[0].len();
         self.width = transposed.len();
     }
