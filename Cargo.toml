@@ -12,7 +12,7 @@ keywords = ["math", "matrix"]
 
 license = "Apache-2.0"
 
-exclude = ["/tests/**"]
+exclude = ["/tests/**", "/benches/**"]
 
 [badges]
 codecov = { repository = "ZippyMagician/mtrs", branch = "master", service = "github" }
