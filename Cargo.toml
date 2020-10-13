@@ -1,6 +1,6 @@
 [package]
 name = "mtrs"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["ZippyMagician <zippymagician1@gmail.com>"]
 edition = "2018"
 
