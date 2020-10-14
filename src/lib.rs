@@ -18,6 +18,7 @@ extern crate num_traits;
 mod impls;
 mod math;
 mod matrix;
+mod size;
 
 use num_traits::Num;
 
@@ -29,13 +30,13 @@ use num_traits::Num;
 /// // All of these create a 2 x 2 matrix.
 ///
 /// // From a 2D vector
-/// let matrix = Matrix::from_vec(2, 2, vec![1, 2, 3, 4]);
+/// let matrix = Matrix::from_vec(2, vec![1, 2, 3, 4]);
 /// // Identity matrix of i32
 /// let matrix: Matrix<i32> = Matrix::identity(2);
 /// // Matrix of ones
-/// let matrix: Matrix<i32> = Matrix::ones(2, 2);
+/// let matrix: Matrix<i32> = Matrix::ones(2);
 /// // Matrix of zeros
-/// let matrix: Matrix<i32> = Matrix::zeros(2, 2);
+/// let matrix: Matrix<i32> = Matrix::zeros(2);
 /// // Matrix of `i32`s
 /// let matrix = matrix![(2, 2); 1, 2, 3, 4];
 /// // Matrix of `f64`s
@@ -68,7 +69,7 @@ pub struct Matrix<T: Num> {
 macro_rules! matrix {
     // matrix![(2, 2); 1, 2; 3, 4]
     (($height:expr,$length:expr); $($($val:expr),*);*) => {
-        mtrs::Matrix::from_vec($height, $length, {
+        mtrs::Matrix::from_vec(($height, $length), {
             let mut vec = Vec::new();
             $(
                 $(
@@ -81,7 +82,7 @@ macro_rules! matrix {
 
     // matrix![f32; (2, 2); 1, 2; 3, 4.2]
     ($type:ty; ($height:expr,$length:expr); $($($val:expr),*);*) => {
-        mtrs::Matrix::from_vec($height, $length, {
+        mtrs::Matrix::from_vec(($height, $length), {
             let mut vec = Vec::new();
             $(
                 $(
@@ -94,7 +95,7 @@ macro_rules! matrix {
 
     // matrix![vec![vec![1, 2], vec![3, 4]]]
     ($vec:expr) => {
-        mtrs::Matrix::from_vec($vec.len(), $vec[0].len(), {
+        mtrs::Matrix::from_vec(($vec.len(), $vec[0].len()), {
             let mut vec = Vec::new();
             for row in $vec {
                 for entry in row {

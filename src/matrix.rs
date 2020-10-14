@@ -1,3 +1,4 @@
+use crate::size::Size;
 use crate::Matrix;
 
 use num_traits::Num;
@@ -20,6 +21,16 @@ fn create_identity<T: Num>(size: usize) -> Vec<T> {
     data
 }
 
+macro_rules! new {
+    ($height:ident, $width:ident, $body:expr) => {
+        Matrix {
+            height: $height,
+            width: $width,
+            data: $body,
+        }
+    };
+}
+
 impl<T: Num + Clone + Copy> Matrix<T> {
     /// Creates a new identity matrix of size `N * N`
     /// ```
@@ -31,70 +42,55 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     /// assert_eq!(matrix.size(), (2, 2));
     /// ```
     pub fn identity(size: usize) -> Self {
-        let data = create_identity(size);
-
-        Self {
-            height: size,
-            width: size,
-            data,
-        }
+        new!(size, size, create_identity(size))
     }
 
     /// Creates a new matrix from a pre-given size, passing a 2d `Vec<T>`
     /// ```
     /// use mtrs::Matrix;
     ///
-    /// let matrix = Matrix::from_vec(2, 2, vec![1, 2, 7, 6]);
+    /// let matrix = Matrix::from_vec((2, 2), vec![1, 2, 7, 6]);
     ///
     /// assert_eq!(matrix.as_slice(), &[1, 2, 7, 6]);
     /// ```
-    pub fn from_vec(height: usize, width: usize, body: Vec<T>) -> Self {
-        Self {
-            height,
-            width,
-            data: body,
-        }
+    pub fn from_vec<S: Size>(size: S, body: Vec<T>) -> Self {
+        let (height, width) = size.dimensions();
+        new!(height, width, body)
     }
 
     /// Create a `Matrix<T>` of size `M * N` filled with `0`s
     /// ```
     /// use mtrs::Matrix;
     ///
-    /// let matrix = Matrix::zeros(2, 2);
+    /// let matrix = Matrix::zeros(2);
     ///
     /// assert_eq!(matrix.as_slice(), &[0, 0, 0, 0]);
-    /// assert_eq!(matrix, Matrix::from_vec(2, 2, vec![0, 0, 0, 0]));
+    /// assert_eq!(matrix, Matrix::from_vec(2, vec![0, 0, 0, 0]));
     /// ```
-    pub fn zeros(height: usize, width: usize) -> Self {
-        Self {
-            height,
-            width,
-            data: vec![T::zero(); width * height],
-        }
+    pub fn zeros<S: Size>(size: S) -> Self {
+        let (height, width) = size.dimensions();
+        new!(height, width, vec![T::zero(); width * height])
     }
 
     /// Create a `Matrix<T>` of size `M * N` filled with `1`s
     /// ```
     /// use mtrs::Matrix;
     ///
-    /// let matrix = Matrix::ones(2, 2);
+    /// let matrix = Matrix::ones(2);
     ///
     /// assert_eq!(matrix.as_slice(), &[1, 1, 1, 1]);
-    /// assert_eq!(matrix, Matrix::from_vec(2, 2, vec![1, 1, 1, 1]));
+    /// assert_eq!(matrix, Matrix::from_vec(2, vec![1, 1, 1, 1]));
     /// ```
-    pub fn ones(height: usize, width: usize) -> Self {
-        Self {
-            height,
-            width,
-            data: vec![T::one(); width * height],
-        }
+    pub fn ones<S: Size>(size: S) -> Self {
+        let (height, width) = size.dimensions();
+        new!(height, width, vec![T::one(); width * height])
     }
 
     /// Returns a tuple representing the dimensions (`(height, width)`)
     /// ```
     /// use mtrs::Matrix;
     ///
-    /// let matrix: Matrix<i32> = Matrix::ones(2, 3);
+    /// let matrix: Matrix<i32> = Matrix::ones((2, 3));
     /// assert_eq!(matrix.size(), (2, 3));
     /// ```
     pub fn size(&self) -> (usize, usize) {
@@ -121,11 +117,19 @@ impl<T: Num + Clone + Copy> Matrix<T> {
         self.data.as_mut_ptr()
     }
 
+    /// Zero out the matrix
+    ///
+    /// Safety: Only use when the values inside the matrix can be safely zeroed
+    #[inline]
+    pub unsafe fn erase(&mut self) {
+        std::ptr::write_bytes(self.as_mut_ptr(), 0, self.data.len());
+    }
+
     /// Return a `Vec` representation of the Matrix
     /// ```
     /// use mtrs::Matrix;
     ///
-    /// let matrix = Matrix::from_vec(2, 2, vec![2, 1, 4, 3]);
+    /// let matrix = Matrix::from_vec(2, vec![2, 1, 4, 3]);
     /// assert_eq!(matrix.as_vec(), vec![vec![2, 1], vec![4, 3]]);
     /// ```
     pub fn as_vec(&self) -> Vec<Vec<T>> {
@@ -231,11 +235,21 @@ mod matrix_tests {
 
     #[test]
     fn test_empty_matrix() {
-        let matrix0: Matrix<i32> = Matrix::zeros(0, 0);
+        let matrix0: Matrix<i32> = Matrix::zeros(0);
 
         assert_eq!(matrix0.size(), (0, 0));
         assert_eq!(matrix0.get_col(0), None);
         assert_eq!(matrix0.as_slice(), &[]);
         assert_eq!(matrix0.scalar_add(0), matrix0);
+    }
+
+    #[test]
+    fn test_erase() {
+        let mut matrix: Matrix<i32> = Matrix::ones(2);
+        unsafe {
+            matrix.erase();
+        }
+
+        assert_eq!(matrix, Matrix::<i32>::zeros(2));
     }
 }

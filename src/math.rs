@@ -19,7 +19,7 @@ impl<T: Num + Clone + Copy> Add for Matrix<T> {
                 new_body.push(*i + other_slice[index]);
             }
 
-            Self::from_vec(self.height, self.width, new_body)
+            Self::from_vec(self.size(), new_body)
         }
     }
 }
@@ -39,7 +39,7 @@ impl<T: Num + Clone + Copy> Sub for Matrix<T> {
                 new_body.push(*i - other_slice[index]);
             }
 
-            Self::from_vec(self.height, self.width, new_body)
+            Self::from_vec(self.size(), new_body)
         }
     }
 }
@@ -70,8 +70,7 @@ impl<T: Num + Clone + Copy> Mul for Matrix<T> {
         }
 
         Self::from_vec(
-            body.len(),
-            body[0].len(),
+            (body.len(), body[0].len()),
             body.iter()
                 .flat_map(|row| row.iter().map(|entry| *entry))
                 .collect(),
@@ -109,38 +108,22 @@ impl<T: Num + Clone + Copy> Matrix<T> {
 
     /// Add a scalar constant to the matrix
     pub fn scalar_add(&self, value: T) -> Self {
-        Self::from_vec(
-            self.height,
-            self.width,
-            self.data.iter().map(|x| *x + value).collect(),
-        )
+        Self::from_vec(self.size(), self.data.iter().map(|x| *x + value).collect())
     }
 
     /// Subtract a scalar constant from the matrix
     pub fn scalar_sub(&self, value: T) -> Self {
-        Self::from_vec(
-            self.height,
-            self.width,
-            self.data.iter().map(|x| *x - value).collect(),
-        )
+        Self::from_vec(self.size(), self.data.iter().map(|x| *x - value).collect())
     }
 
     /// Multiply a scalar constant with the matrix
     pub fn scalar_mul(&self, value: T) -> Self {
-        Self::from_vec(
-            self.height,
-            self.width,
-            self.data.iter().map(|x| *x * value).collect(),
-        )
+        Self::from_vec(self.size(), self.data.iter().map(|x| *x * value).collect())
     }
 
     /// Divide each entry in the matrix by a scalar constant
     pub fn scalar_div(&self, value: T) -> Self {
-        Self::from_vec(
-            self.height,
-            self.width,
-            self.data.iter().map(|x| *x / value).collect(),
-        )
+        Self::from_vec(self.size(), self.data.iter().map(|x| *x / value).collect())
     }
 
     /// Calculate the determinant of the `Matrix` (if the `Matrix` is square)

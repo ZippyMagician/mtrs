@@ -1,3 +1,4 @@
+use std::convert::Into;
 use std::fmt::{self, Display, Formatter};
 use std::ops::Index;
 
@@ -43,5 +44,13 @@ impl<T: Num> Index<(usize, usize)> for Matrix<T> {
 
     fn index(&self, pos: (usize, usize)) -> &Self::Output {
         &self.data[pos.0 * self.width + pos.1]
+    }
+}
+
+/// Implements the `Into<T>` trait where `T` is `Vec<T>`
+impl<T: Num> Into<Vec<T>> for Matrix<T> {
+    #[inline]
+    fn into(self) -> Vec<T> {
+        self.data
     }
 }
