@@ -54,7 +54,7 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     /// assert_eq!(matrix.as_slice(), &[1, 2, 7, 6]);
     /// ```
     pub fn from_vec<S: Size>(size: S, body: Vec<T>) -> Self {
-        let (height, width) = size.dimensions();
+        let (height, width) = size.dim();
         new!(height, width, body)
     }
 
@@ -68,7 +68,7 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     /// assert_eq!(matrix, Matrix::from_vec(2, vec![0, 0, 0, 0]));
     /// ```
     pub fn zeros<S: Size>(size: S) -> Self {
-        let (height, width) = size.dimensions();
+        let (height, width) = size.dim();
         new!(height, width, vec![T::zero(); width * height])
     }
 
@@ -82,7 +82,7 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     /// assert_eq!(matrix, Matrix::from_vec(2, vec![1, 1, 1, 1]));
     /// ```
     pub fn ones<S: Size>(size: S) -> Self {
-        let (height, width) = size.dimensions();
+        let (height, width) = size.dim();
         new!(height, width, vec![T::one(); width * height])
     }
 
