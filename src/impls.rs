@@ -2,6 +2,7 @@ use std::convert::Into;
 use std::fmt::{self, Display, Formatter};
 use std::ops::Index;
 
+use crate::size::Size;
 use crate::Matrix;
 
 use num_traits::Num;
@@ -38,12 +39,14 @@ where
 ///
 /// let matrix: Matrix<u8> = Matrix::identity(3);
 /// assert_eq!(matrix[(1, 1)], 1);
+/// assert_eq!(matrix[1], matrix[(1, 1)])
 /// ```
-impl<T: Num> Index<(usize, usize)> for Matrix<T> {
+impl<T: Num, S: Size> Index<S> for Matrix<T> {
     type Output = T;
 
-    fn index(&self, pos: (usize, usize)) -> &Self::Output {
-        &self.data[pos.0 * self.width + pos.1]
+    fn index(&self, pos: S) -> &Self::Output {
+        let (h, w) = pos.dim();
+        &self.data[h * self.width + w]
     }
 }
 

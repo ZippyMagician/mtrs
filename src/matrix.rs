@@ -1,6 +1,8 @@
 use crate::size::Size;
 use crate::Matrix;
 
+use std::io;
+
 use num_traits::Num;
 
 fn create_identity<T: Num>(size: usize) -> Vec<T> {
@@ -56,6 +58,12 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     pub fn from_vec<S: Size>(size: S, body: Vec<T>) -> Self {
         let (height, width) = size.dim();
         new!(height, width, body)
+    }
+
+    /// Creates a new matrix from a slice
+    pub fn from_slice<S: Size>(size: S, body: &[T]) -> Self {
+        let (height, width) = size.dim();
+        new!(height, width, body.to_vec())
     }
 
     /// Create a `Matrix<T>` of size `M * N` filled with `0`s
@@ -201,10 +209,30 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     ///
     /// let mat = matrix![i32; (2, 2); 1, 2; 3, 4];
     ///
-    /// assert_eq!(mat.get(0, 1), Some(&2));
+    /// assert_eq!(mat.get((0, 1)), Some(&2));
     /// ```
-    pub fn get(&self, h: usize, w: usize) -> Option<&T> {
+    pub fn get<S: Size>(&self, loc: S) -> Option<&T> {
+        let (h, w) = loc.dim();
         self.data.get(h * self.width + w)
+    }
+
+    /// Sets an entry in the Matrix
+    /// ```
+    /// #[macro_use] extern crate mtrs;
+    /// use mtrs::Matrix;
+    ///
+    /// let mut mat = matrix![(2, 3); 1, 2, 3; 4, 5, 6];
+    /// mat.set(1, 13);
+    /// assert_eq!(mat.as_slice(), &[1, 2, 3, 4, 13, 6]);
+    /// ```
+    pub fn set<S: Size>(&mut self, loc: S, val: T) -> io::Result<()> {
+        let (h, w) = loc.dim();
+        if h >= self.height || w >= self.width {
+            Err(io::Error::new(io::ErrorKind::InvalidData, "Invalid bounds"))
+        } else {
+            self.data[h * self.width + w] = val;
+            Ok(())
+        }
     }
 }
 

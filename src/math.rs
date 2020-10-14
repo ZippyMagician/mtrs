@@ -155,6 +155,7 @@ impl<T: Num + Clone + Copy> Matrix<T> {
                 }
 
                 if (index - i) % 2 != 0 {
+                    // Negate det
                     det = T::zero() - det;
                 }
             }
@@ -187,7 +188,7 @@ impl<T: Num + Clone + Copy> Matrix<T> {
         if self.height != self.width {
             return None;
         }
-        // The bounds are checked, so this is guaranteed to be Some
+        // The bounds are checked, so this is guaranteed to be Some(T)
         let det = self.determinant().unwrap();
         if det.is_zero() {
             return None;
