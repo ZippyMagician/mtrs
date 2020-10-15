@@ -61,6 +61,14 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     }
 
     /// Creates a new matrix from a slice
+    /// ```
+    /// use mtrs::Matrix;
+    ///
+    /// let matrix = Matrix::from_slice((2, 2), &[1, 2, 7, 6]);
+    ///
+    /// assert_eq!(matrix.as_slice(), &[1, 2, 7, 6]);
+    /// assert_eq!(matrix[(1, 0)], 7);
+    /// ```
     pub fn from_slice<S: Size>(size: S, body: &[T]) -> Self {
         let (height, width) = size.dim();
         new!(height, width, body.to_vec())

@@ -1,4 +1,4 @@
-use std::convert::Into;
+use std::convert::From;
 use std::fmt::{self, Display, Formatter};
 use std::ops::Index;
 
@@ -50,10 +50,9 @@ impl<T: Num, S: Size> Index<S> for Matrix<T> {
     }
 }
 
-/// Implements the `Into<T>` trait where `T` is `Vec<T>`
-impl<T: Num> Into<Vec<T>> for Matrix<T> {
-    #[inline]
-    fn into(self) -> Vec<T> {
-        self.data
+/// Implements the `From<Matrix<T>>` trait for `Vec<T>`
+impl<T: Num + Clone + Copy> From<Matrix<T>> for Vec<T> {
+    fn from(mat: Matrix<T>) -> Self {
+        mat.as_slice().to_vec()
     }
 }
