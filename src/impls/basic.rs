@@ -8,13 +8,6 @@ use crate::Matrix;
 use num_traits::Num;
 
 /// Pretty print of the `Matrix` via this impl
-/// ```
-/// extern crate mtrs;
-/// use mtrs::Matrix;
-///
-/// let matrix: Matrix<i32> = Matrix::identity(3);
-/// println!("{}", matrix);
-/// ```
 impl<T> Display for Matrix<T>
 where
     T: Num + Clone + Copy + Display,
@@ -33,14 +26,6 @@ where
 }
 
 /// Allows for the indexing of `Matrix`
-/// ```
-/// extern crate mtrs;
-/// use mtrs::Matrix;
-///
-/// let matrix: Matrix<u8> = Matrix::identity(3);
-/// assert_eq!(matrix[(1, 1)], 1);
-/// assert_eq!(matrix[1], matrix[(1, 1)])
-/// ```
 impl<T: Num, S: Size> Index<S> for Matrix<T> {
     type Output = T;
 
