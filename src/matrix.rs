@@ -7,9 +7,8 @@ use num_traits::Num;
 
 fn create_identity<T: Num>(size: usize) -> Vec<T> {
     let mut data = Vec::new();
-    let mut offset = 0;
 
-    for _ in 0..size {
+    for (offset, _) in (0..size).enumerate() {
         for x in 0..size {
             if x == offset {
                 data.push(T::one());
@@ -17,7 +16,6 @@ fn create_identity<T: Num>(size: usize) -> Vec<T> {
                 data.push(T::zero())
             }
         }
-        offset += 1;
     }
 
     data
@@ -134,8 +132,7 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     }
 
     /// Zero out the matrix
-    ///
-    /// Safety: Only use when the values inside the matrix can be safely zeroed
+    // Safety: Only use when the values inside the matrix can be safely zeroed
     #[inline]
     pub unsafe fn erase(&mut self) {
         std::ptr::write_bytes(self.as_mut_ptr(), 0, self.data.len());

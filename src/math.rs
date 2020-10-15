@@ -17,14 +17,14 @@ impl<T: Num + Clone + Copy> Matrix<T> {
         let mut transposed = vec![Vec::with_capacity(v.len()); v[0].len()];
 
         for i in 0..v[0].len() {
-            for j in 0..v.len() {
-                transposed[i].push(v[j][i]);
+            for row in &v {
+                transposed[i].push(row[i]);
             }
         }
 
         self.data = transposed
             .iter()
-            .flat_map(|row| row.iter().map(|entry| *entry))
+            .flat_map(|row| row.iter().copied())
             .collect();
         self.height = transposed[0].len();
         self.width = transposed.len();

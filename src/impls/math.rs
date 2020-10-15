@@ -1,4 +1,5 @@
 use std::ops::*;
+use std::iter::Sum;
 
 use crate::Matrix;
 
@@ -45,7 +46,7 @@ impl<T: Num + Clone + Copy> Sub for Matrix<T> {
 }
 
 /// Implements multiplication between `Matrix<T>` and `Matrix<T>`
-impl<T: Num + Clone + Copy> Mul for Matrix<T> {
+impl<T: Num + Clone + Copy + Sum> Mul for Matrix<T> {
     type Output = Self;
 
     fn mul(self, other: Self) -> Self {
@@ -54,25 +55,23 @@ impl<T: Num + Clone + Copy> Mul for Matrix<T> {
         }
 
         let mut body: Vec<Vec<T>> = vec![Vec::new(); self.height];
-        let mut i = 0;
 
-        for row in self.as_vec() {
+        for (i, row) in self.as_vec().iter().enumerate() {
             for col in other.cols() {
                 body[i].push(
                     row.iter()
                         .zip(col.iter())
                         .map(|(&left, &right)| left * right)
-                        .fold(T::zero(), |acc, x| acc + x),
+                        .sum::<T>()
+                        .into(),
                 );
             }
-
-            i += 1;
         }
 
         Self::from_vec(
             (body.len(), body[0].len()),
             body.iter()
-                .flat_map(|row| row.iter().map(|entry| *entry))
+                .flat_map(|row| row.iter().copied())
                 .collect(),
         )
     }
@@ -126,9 +125,21 @@ mod math_tests {
     fn test_ops() {
         let matrix: Matrix<f32> = Matrix::from_slice((1, 3), &[1.0, 4.0, 7.0]);
 
-        assert_eq!(matrix.clone() + 3.0, Matrix::from_slice((1, 3), &[4.0, 7.0, 10.0]));
-        assert_eq!(matrix.clone() - 1.0, Matrix::from_slice((1, 3), &[0.0, 3.0, 6.0]));
-        assert_eq!(matrix.clone() / 2.0, Matrix::from_slice((1, 3), &[0.5, 2.0, 3.5]));
-        assert_eq!(matrix.clone() * 2.0, Matrix::from_slice((1, 3), &[2.0, 8.0, 14.0]));
+        assert_eq!(
+            matrix.clone() + 3.0,
+            Matrix::from_slice((1, 3), &[4.0, 7.0, 10.0])
+        );
+        assert_eq!(
+            matrix.clone() - 1.0,
+            Matrix::from_slice((1, 3), &[0.0, 3.0, 6.0])
+        );
+        assert_eq!(
+            matrix.clone() / 2.0,
+            Matrix::from_slice((1, 3), &[0.5, 2.0, 3.5])
+        );
+        assert_eq!(
+            matrix.clone() * 2.0,
+            Matrix::from_slice((1, 3), &[2.0, 8.0, 14.0])
+        );
     }
 }

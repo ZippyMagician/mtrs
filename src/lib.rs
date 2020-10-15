@@ -16,10 +16,10 @@
 extern crate num_traits;
 
 mod impls;
+mod macros;
 mod math;
 mod matrix;
 mod size;
-mod macros;
 
 use num_traits::Num;
 
