@@ -69,28 +69,12 @@ pub struct Matrix<T: Num> {
 macro_rules! matrix {
     // matrix![(2, 2); 1, 2; 3, 4]
     (($height:expr,$length:expr); $($($val:expr),*);*) => {
-        mtrs::Matrix::from_vec(($height, $length), {
-            let mut vec = Vec::new();
-            $(
-                $(
-                    vec.push($val);
-                )*
-            )*
-            vec
-        })
+        mtrs::Matrix::from_slice(($height, $length), &[$($($val,)*)*])
     };
 
     // matrix![f32; (2, 2); 1, 2; 3, 4.2]
     ($type:ty; ($height:expr,$length:expr); $($($val:expr),*);*) => {
-        mtrs::Matrix::from_vec(($height, $length), {
-            let mut vec = Vec::new();
-            $(
-                $(
-                    vec.push($val as $type);
-                )*
-            )*
-            vec
-        })
+        mtrs::Matrix::<$type>::from_slice(($height, $length), &[$($($val as $type,)*)*])
     };
 
     // matrix![vec![vec![1, 2], vec![3, 4]]]
