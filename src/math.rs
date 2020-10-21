@@ -31,26 +31,67 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     }
 
     /// Add a scalar constant to the matrix
+    /// ```
+    /// #[macro_use] extern crate mtrs;
+    /// use mtrs::Matrix;
+    ///
+    /// let m1 = Matrix::identity(2);
+    ///
+    /// assert_eq!(m1.scalar_add(2), matrix![(2, 2); 3, 2; 2, 3]);
+    /// ```
     pub fn scalar_add(&self, value: T) -> Self {
         Self::from_vec(self.size(), self.data.iter().map(|x| *x + value).collect())
     }
 
     /// Subtract a scalar constant from the matrix
+    /// ```
+    /// #[macro_use] extern crate mtrs;
+    /// use mtrs::Matrix;
+    ///
+    /// let m1 = Matrix::identity(2);
+    ///
+    /// assert_eq!(m1.scalar_sub(2), matrix![(2, 2); -1, -2; -2, -1]);
+    /// ```
     pub fn scalar_sub(&self, value: T) -> Self {
         Self::from_vec(self.size(), self.data.iter().map(|x| *x - value).collect())
     }
 
     /// Multiply a scalar constant with the matrix
+    /// ```
+    /// #[macro_use] extern crate mtrs;
+    /// use mtrs::Matrix;
+    ///
+    /// let m1 = Matrix::identity(2);
+    ///
+    /// assert_eq!(m1.scalar_mul(3), matrix![(2, 2); 3, 0; 0, 3]);
+    /// ```
     pub fn scalar_mul(&self, value: T) -> Self {
         Self::from_vec(self.size(), self.data.iter().map(|x| *x * value).collect())
     }
 
     /// Divide each entry in the matrix by a scalar constant
+    /// ```
+    /// #[macro_use] extern crate mtrs;
+    /// use mtrs::Matrix;
+    ///
+    /// let m1 = matrix![(2, 2); 4, 6; 8, 10];
+    ///
+    /// assert_eq!(m1.scalar_div(2), matrix![(2, 2); 2, 3; 4, 5]);
+    /// ```
     pub fn scalar_div(&self, value: T) -> Self {
         Self::from_vec(self.size(), self.data.iter().map(|x| *x / value).collect())
     }
 
     /// Calculate the determinant of the `Matrix` (if the `Matrix` is square)
+    /// ```
+    /// #[macro_use] extern crate mtrs;
+    /// 
+    /// let matrix = matrix![(4, 4); 1, 0, 2, -1; 3, 0, 0, 5; 2, 1, 4, -3; 1, 0, 5, 0];
+    /// 
+    /// assert_eq!(matrix.determinant(), Some(30));
+    /// ```
+    /// # Failure
+    /// Fails if the matrix is not square
     pub fn determinant(&self) -> Option<T> {
         if self.height != self.width {
             return None;
@@ -108,6 +149,15 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     }
 
     /// Calculate the inverse of `Matrix<T>`, via multiplying the reciprocal of the `determinant`
+    /// ```
+    /// #[macro_use] extern crate mtrs;
+    ///
+    /// let matrix = matrix![f32; (2, 2); -1, 1.5; 1, -1];
+    ///
+    /// assert_eq!(matrix.inverse().expect("Could not take inverse"), matrix![f32; (2, 2); 2, -3; -2, 2]);
+    /// ```
+    /// # Failure
+    /// Fails if the matrix is not invertible (that is, it is not square __or__ the determinant is `0`)
     pub fn inverse(&self) -> Option<Self> {
         if self.height != self.width {
             return None;
@@ -118,6 +168,6 @@ impl<T: Num + Clone + Copy> Matrix<T> {
             return None;
         }
 
-        Some(self.scalar_mul(T::one() / det))
+        Some(self.scalar_div(det))
     }
 }

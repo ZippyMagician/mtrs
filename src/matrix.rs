@@ -5,22 +5,7 @@ use std::io;
 
 use num_traits::Num;
 
-fn create_identity<T: Num>(size: usize) -> Vec<T> {
-    let mut data = Vec::new();
-
-    for (offset, _) in (0..size).enumerate() {
-        for x in 0..size {
-            if x == offset {
-                data.push(T::one());
-            } else {
-                data.push(T::zero())
-            }
-        }
-    }
-
-    data
-}
-
+// Quick private macro to create a new Matrix class
 macro_rules! new {
     ($height:ident, $width:ident, $body:expr) => {
         Matrix {
@@ -42,7 +27,7 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     /// assert_eq!(matrix.size(), (2, 2));
     /// ```
     pub fn identity(size: usize) -> Self {
-        new!(size, size, create_identity(size))
+        Self::diag(vec![T::one(); size])
     }
 
     /// Creates a new matrix from a pre-given size, passing a 2d `Vec<T>`
@@ -98,6 +83,24 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     pub fn ones<S: Size>(size: S) -> Self {
         let (height, width) = size.dim();
         new!(height, width, vec![T::one(); width * height])
+    }
+
+    /// Create a square matrix with a diagonal (all other values initialized at 0)
+    /// ```
+    /// use mtrs::Matrix;
+    ///
+    /// let matrix = Matrix::diag(vec![1, 2, 3]);
+    ///
+    /// assert_eq!(matrix.as_slice(), &[1, 0, 0, 0, 2, 0, 0, 0, 3]);
+    /// assert_eq!(matrix.size(), (3, 3));
+    /// ```
+    pub fn diag(diagonal: Vec<T>) -> Self {
+        let mut m = Self::zeros(diagonal.len());
+        for (i, val) in diagonal.iter().enumerate() {
+            m.set(i, *val).expect("Something went wrong");
+        }
+
+        m
     }
 
     /// Returns a tuple representing the dimensions (`(height, width)`)
@@ -216,6 +219,8 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     ///
     /// assert_eq!(mat.get((0, 1)), Some(&2));
     /// ```
+    /// # Failure
+    /// Fails if the location is out of bounds
     pub fn get<S: Size>(&self, loc: S) -> Option<&T> {
         let (h, w) = loc.dim();
         self.data.get(h * self.width + w)
@@ -230,6 +235,8 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     /// mat.set(1, 13);
     /// assert_eq!(mat.as_slice(), &[1, 2, 3, 4, 13, 6]);
     /// ```
+    /// # Failure
+    /// Fails if you attempt to set a value that is out of bounds
     pub fn set<S: Size>(&mut self, loc: S, val: T) -> io::Result<()> {
         let (h, w) = loc.dim();
         if h >= self.height || w >= self.width {
@@ -239,6 +246,8 @@ impl<T: Num + Clone + Copy> Matrix<T> {
             Ok(())
         }
     }
+
+    // TODO: `resize` function
 }
 
 #[cfg(test)]
@@ -284,5 +293,14 @@ mod matrix_tests {
         }
 
         assert_eq!(matrix, Matrix::<i32>::zeros(2));
+    }
+
+    #[test]
+    fn test_diagonal() {
+        let matrix = Matrix::diag(vec![3, 7, 8, 1]);
+
+        assert_eq!(matrix.get_col(1), Some(vec![0, 7, 0, 0]));
+        assert_eq!(matrix.size(), (4, 4));
+        assert_eq!(matrix.get(2), Some(&8));
     }
 }
