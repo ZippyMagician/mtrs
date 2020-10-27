@@ -1,5 +1,5 @@
-use std::ops::*;
 use std::iter::Sum;
+use std::ops::*;
 
 use crate::Matrix;
 
@@ -70,9 +70,7 @@ impl<T: Num + Clone + Copy + Sum> Mul for Matrix<T> {
 
         Self::from_vec(
             (body.len(), body[0].len()),
-            body.iter()
-                .flat_map(|row| row.iter().copied())
-                .collect(),
+            body.iter().flat_map(|row| row.iter().copied()).collect(),
         )
     }
 }

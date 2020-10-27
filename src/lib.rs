@@ -54,3 +54,17 @@ pub struct Matrix<T: Num> {
     /// The main body of the matrix, stored as a 2d array
     data: Vec<T>,
 }
+
+#[cfg(test)]
+mod main_tests {
+    use super::Matrix;
+
+    #[test]
+    fn test_values() {
+        let matrix = Matrix::from_slice((2, 2), &[1, 2, 3, 4]);
+
+        assert_eq!(matrix.height, 2);
+        assert_eq!(matrix.width, 2);
+        assert_eq!(matrix.data, vec![1, 2, 3, 4]);
+    }
+}

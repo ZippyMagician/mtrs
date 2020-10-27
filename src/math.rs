@@ -85,9 +85,9 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     /// Calculate the determinant of the `Matrix` (if the `Matrix` is square)
     /// ```
     /// #[macro_use] extern crate mtrs;
-    /// 
+    ///
     /// let matrix = matrix![(4, 4); 1, 0, 2, -1; 3, 0, 0, 5; 2, 1, 4, -3; 1, 0, 5, 0];
-    /// 
+    ///
     /// assert_eq!(matrix.determinant(), Some(30));
     /// ```
     /// # Failure
