@@ -61,10 +61,15 @@ mod main_tests {
 
     #[test]
     fn test_values() {
-        let matrix = Matrix::from_slice((2, 2), &[1, 2, 3, 4]);
+        let mut matrix = Matrix::from_slice((2, 3), &[1, 2, 3, 4, 5, 6]);
 
         assert_eq!(matrix.height, 2);
-        assert_eq!(matrix.width, 2);
-        assert_eq!(matrix.data, vec![1, 2, 3, 4]);
+        assert_eq!(matrix.width, 3);
+
+        matrix.resize((3, 3));
+        
+        assert_eq!(matrix.height, 3);
+        assert_eq!(matrix.width, 3);
+        assert_eq!(matrix.data, vec![1, 2, 3, 4, 5, 6, 0, 0, 0]);
     }
 }

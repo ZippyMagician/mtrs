@@ -310,6 +310,7 @@ mod matrix_tests {
         assert_eq!(matrix0.get_col(0), None);
         assert_eq!(matrix0.as_slice(), &[]);
         assert_eq!(matrix0.scalar_add(0), matrix0);
+        assert_eq!(matrix0.as_vec(), Vec::<Vec<i32>>::new());
     }
 
     #[test]
@@ -339,5 +340,16 @@ mod matrix_tests {
         matrix.resize((3, 4));
         assert_eq!(matrix.size(), (3, 4));
         assert_eq!(matrix.as_slice(), &[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]);
+    }
+
+    #[test]
+    fn test_get_set() {
+        let mut matrix: Matrix<i32> = Matrix::identity(3);
+
+        assert!(matrix.set(5, 3).is_err());
+        assert!(matrix.set(1, 2).is_ok());
+        assert_eq!(matrix.get(1), Some(&2));
+        assert_eq!(matrix.get(0), Some(&1));
+        assert_eq!(matrix.get((1, 2)), Some(&0));
     }
 }
