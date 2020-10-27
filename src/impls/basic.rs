@@ -18,7 +18,7 @@ where
                 write!(fmt, "{} ", self.data[index])?;
             }
 
-            write!(fmt, "\n")?;
+            writeln!(fmt)?;
         }
 
         Ok(())

@@ -62,8 +62,7 @@ impl<T: Num + Clone + Copy + Sum> Mul for Matrix<T> {
                     row.iter()
                         .zip(col.iter())
                         .map(|(&left, &right)| left * right)
-                        .sum::<T>()
-                        .into(),
+                        .sum::<T>(),
                 );
             }
         }

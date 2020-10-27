@@ -67,7 +67,7 @@ mod main_tests {
         assert_eq!(matrix.width, 3);
 
         matrix.resize((3, 3));
-        
+
         assert_eq!(matrix.height, 3);
         assert_eq!(matrix.width, 3);
         assert_eq!(matrix.data, vec![1, 2, 3, 4, 5, 6, 0, 0, 0]);

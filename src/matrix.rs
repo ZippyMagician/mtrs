@@ -135,7 +135,8 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     }
 
     /// Zero out the matrix
-    // Safety: Only use when the values inside the matrix can be safely zeroed
+    /// # Safety
+    /// Only use when the values inside the matrix can be safely zeroed
     #[inline]
     pub unsafe fn erase(&mut self) {
         std::ptr::write_bytes(self.as_mut_ptr(), 0, self.data.len());
@@ -259,7 +260,10 @@ impl<T: Num + Clone + Copy> Matrix<T> {
         let (height, width) = size.dim();
 
         if self.height != height {
-            self.data.resize(self.height * self.width + (height - self.height) * self.width, T::zero());
+            self.data.resize(
+                self.height * self.width + (height - self.height) * self.width,
+                T::zero(),
+            );
             self.height = height;
         }
 
@@ -272,7 +276,10 @@ impl<T: Num + Clone + Copy> Matrix<T> {
             }
 
             self.width = width;
-            self.data = new_dat.iter().flat_map(|entry| entry.iter().copied()).collect();
+            self.data = new_dat
+                .iter()
+                .flat_map(|entry| entry.iter().copied())
+                .collect();
         }
     }
 }
