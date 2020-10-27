@@ -247,7 +247,34 @@ impl<T: Num + Clone + Copy> Matrix<T> {
         }
     }
 
-    // TODO: `resize` function
+    /// Resizes the Matrix to any size, with all new values initialized to `0`
+    /// ```
+    /// #[macro_use] extern crate mtrs;
+    ///
+    /// let mut mat = matrix![(2, 3); 1, 2, 3; 4, 5, 6];
+    /// mat.resize((2, 2));
+    /// assert_eq!(mat.as_slice(), &[1, 2, 4, 5]);
+    /// ```
+    pub fn resize<S: Size>(&mut self, size: S) {
+        let (height, width) = size.dim();
+
+        if self.height != height {
+            self.data.resize(self.height * self.width + (height - self.height) * self.width, T::zero());
+            self.height = height;
+        }
+
+        if self.width != width {
+            let mut new_dat = self.as_vec();
+
+            for entry in &mut new_dat {
+                let len = entry.len();
+                entry.resize(len + width - self.width, T::zero());
+            }
+
+            self.width = width;
+            self.data = new_dat.iter().flat_map(|entry| entry.iter().copied()).collect();
+        }
+    }
 }
 
 #[cfg(test)]
@@ -302,5 +329,15 @@ mod matrix_tests {
         assert_eq!(matrix.get_col(1), Some(vec![0, 7, 0, 0]));
         assert_eq!(matrix.size(), (4, 4));
         assert_eq!(matrix.get(2), Some(&8));
+    }
+
+    #[test]
+    fn test_resize() {
+        let mut matrix: Matrix<i32> = Matrix::identity(2);
+
+        assert_eq!(matrix.size(), (2, 2));
+        matrix.resize((3, 4));
+        assert_eq!(matrix.size(), (3, 4));
+        assert_eq!(matrix.as_slice(), &[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]);
     }
 }
