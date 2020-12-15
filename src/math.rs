@@ -159,15 +159,11 @@ impl<T: Num + Clone + Copy> Matrix<T> {
     /// # Failure
     /// Fails if the matrix is not invertible (that is, it is not square __or__ the determinant is `0`)
     pub fn inverse(&self) -> Option<Self> {
-        if self.height != self.width {
-            return None;
-        }
-        // The bounds are checked, so this is guaranteed to be Some(T)
-        let det = self.determinant().unwrap();
+        let det = self.determinant()?;
         if det.is_zero() {
-            return None;
+            None
+        } else {
+            Some(self.scalar_div(det))
         }
-
-        Some(self.scalar_div(det))
     }
 }
